@@ -17,7 +17,7 @@ export default (state = initialState, action) => {
         case KEYWORD_PHOTOS_SUCCESS :
             return {
                 ...state,
-                photos : action.payload,
+                photos : action.payload.data,
                 success : true,
                 isLoading : false
             };
@@ -30,7 +30,7 @@ export default (state = initialState, action) => {
         case KEYWORD_VIDEOS_SUCCESS :
             return {
                 ...state,
-                videos : action.payload,
+                videos : action.payload.data,
                 success : true,
                 isLoading : false
             };
