@@ -1,0 +1,4 @@
+photo
+bag
+school
+equipment
