@@ -20,4 +20,5 @@ The Node.js backend is using a local MySQL database with the following configura
 ### Privileges settings
 
 > grant all privileges on photo_browser_db.* to 'photo_browser_dbuser'@'%';
+> 
 > grant all privileges;
