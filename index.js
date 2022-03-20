@@ -26,7 +26,7 @@ server.use(session({ secret: process.env.APP_SECRET }));
 server.use(passport.initialize());
 server.use(passport.session());
 
-server.use('/page', indexApi);
+server.use('/index', indexApi);
 server.use('/user', userApi);
 server.use('/client', clientApi);
 

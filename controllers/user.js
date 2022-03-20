@@ -1,22 +1,21 @@
 const jwt = require('jsonwebtoken');
 const { runSQLQuery, handleError } = require('../config/db');
+const bcrypt = require("bcrypt");
 
 exports.register_new_user = (req, res, next) => {
     const {
         firstname,
         lastname,
         email,
-        password,
-        country,
-        city
+        password
     } = req.body;
 
-    if (firstname && lastname && email &&  password && country && city) {
+    if (firstname && lastname && email &&  password) {
         bcrypt.genSalt(10, (err, salt) => {
             if (err) return handleError(err, res);
             bcrypt.hash(password, salt, (err, hash) => {
                 if (err) return handleError(err, res);
-                runSQLQuery(`insert into User(Id_user, firstname, lastname, email, password, country, city) values(uuid(), "${firstname}", "${lastname}", "${email}", "${hash}", "${country}", "${city}");`).then(r => {
+                runSQLQuery(`insert into Users(Id_user, firstname, lastname, email, password, createdAt, updatedAt) values(uuid(), "${firstname}", "${lastname}", "${email}", "${hash}", CURDATE(), CURDATE());`).then(r => {
                     res.json({
                         success: true,
                         data : r,
@@ -34,20 +33,20 @@ exports.register_new_user = (req, res, next) => {
 exports.login = (req, res, next) => {
     let errors = {};
     let msg = "";
-    const query = `SELECT * FROM Users WHERE username="${req.body.username}";`;
+    const query = `SELECT * FROM Users WHERE email="${req.body.email}";`;
     runSQLQuery(query).then(r => {
         if (r.length) {
             console.log(r[0]);
             bcrypt.compare(req.body.password, r[0].password).then(correct => {
 				if (correct) {
 					// User Matched
-			        const payload = { id: r[0].Id_user, username: r[0].username }; // Create JWT Payload
+			        const payload = { id: r[0].Id_user, email: r[0].email }; // Create JWT Payload
                     console.log(payload);
 
 			        // Sign Token
 			        jwt.sign(
 			          payload,
-			          keys.secretOrKey,
+			          process.env.APP_SECRET,
 			          { expiresIn: 102000 },
 			          (err, token) => {
 			            res.json({

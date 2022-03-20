@@ -1,15 +1,15 @@
-CREATE TABLE Users(
-   Id_user VARCHAR(50),
-   username VARCHAR(50) NOT NULL,
+CREATE TABLE IF NOT EXISTS Users(
+   Id_user VARCHAR(150),
    firstname VARCHAR(50) NOT NULL,
    createdAt DATE NOT NULL,
    lastname VARCHAR(50) NOT NULL,
+   password VARCHAR(150) NOT NULL,
    email VARCHAR(255) NOT NULL,
    updatedAt DATETIME NOT NULL,
    PRIMARY KEY(Id_user)
 );
 
-CREATE TABLE Album(
+CREATE TABLE IF NOT EXISTS Album(
    Id_album VARCHAR(50),
    name VARCHAR(50) NOT NULL,
    createdAt DATE,
@@ -19,9 +19,8 @@ CREATE TABLE Album(
    FOREIGN KEY(Id_user) REFERENCES Users(Id_user)
 );
 
-CREATE TABLE Media(
+CREATE TABLE IF NOT EXISTS Media(
    Id_media VARCHAR(50),
-   name VARCHAR(50) NOT NULL,
    updatedAt DATE,
    url VARCHAR(255) NOT NULL,
    createdAt DATE,
@@ -29,7 +28,7 @@ CREATE TABLE Media(
    PRIMARY KEY(Id_media)
 );
 
-CREATE TABLE AlbumMedia(
+CREATE TABLE IF NOT EXISTS AlbumMedia(
    Id_album VARCHAR(50),
    Id_media VARCHAR(50),
    createdAt DATETIME NOT NULL,
@@ -38,7 +37,7 @@ CREATE TABLE AlbumMedia(
    FOREIGN KEY(Id_media) REFERENCES Media(Id_media)
 );
 
-CREATE TABLE AlbumShareHistory(
+CREATE TABLE IF NOT EXISTS AlbumShareHistory(
    Id_user VARCHAR(50),
    Id_album VARCHAR(50),
    createdAt DATETIME NOT NULL,
@@ -47,7 +46,7 @@ CREATE TABLE AlbumShareHistory(
    FOREIGN KEY(Id_album) REFERENCES Album(Id_album)
 );
 
-CREATE TABLE MediaShareHistory(
+CREATE TABLE IF NOT EXISTS MediaShareHistory(
    Id_user VARCHAR(50),
    Id_media VARCHAR(50),
    createdAt DATETIME NOT NULL,
@@ -56,7 +55,7 @@ CREATE TABLE MediaShareHistory(
    FOREIGN KEY(Id_media) REFERENCES Media(Id_media)
 );
 
-CREATE TABLE MediaDeleting(
+CREATE TABLE IF NOT EXISTS MediaDeleting(
    Id_user VARCHAR(50),
    Id_album VARCHAR(50),
    Id_media VARCHAR(50),
@@ -67,7 +66,7 @@ CREATE TABLE MediaDeleting(
    FOREIGN KEY(Id_media) REFERENCES Media(Id_media)
 );
 
-CREATE TABLE AlbumDeleting(
+CREATE TABLE IF NOT EXISTS AlbumDeleting(
    Id_user VARCHAR(50),
    Id_album VARCHAR(50),
    createdAt DATETIME NOT NULL,
