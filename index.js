@@ -2,6 +2,11 @@ const express = require('express');
 const logger = require('morgan');
 const session = require('express-session');
 const cors = require('cors');
+const passport = require('passport');
+require('dotenv').config();
+
+// Passport Config
+require('./config/passport')(passport);
 
 // Routes
 const indexApi = require('./routes/index');
@@ -17,9 +22,9 @@ server.use(cors());
 server.use(logger('dev'));
 server.use(express.urlencoded({ extended: false }));
 server.use(express.json());
-
-server.use(session({ secret: 'our new secret'}));
-
+server.use(session({ secret: process.env.APP_SECRET }));
+server.use(passport.initialize());
+server.use(passport.session());
 
 server.use('/page', indexApi);
 server.use('/user', userApi);

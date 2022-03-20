@@ -84,17 +84,12 @@ function Index({
                     }
                     <div className="mt-5" />
                     {
-                        photos && mode ? (
+                        photos.length && mode ? (
                             <Fragment>
                                 <h2 className="text-center">
                                     Résultats
                                 </h2>
                                 <div className="gallery">
-                                {/* {
-                                    photos.map((p, index) => (
-                                        <img key={index} className="img-fluid img-preview m-2" src={p.src} />
-                                    ))
-                                } */}
                                 <ImageList variant="masonry" cols={3} gap={8}>
                                 {storedPhotos.map((item, index) => (
                                     <ImageListItem key={index}>
