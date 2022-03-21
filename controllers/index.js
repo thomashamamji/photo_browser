@@ -82,3 +82,137 @@ exports.list_album_medias = (req, res, next) => {
         msg : "Missing album name."
     })
 }
+
+exports.remove_media = (req, res, next) => {
+    const {
+        id
+    } = req.params;
+
+    if (id) {
+        runSQLQuery(`select AlbumMedia.Id_album from Media join AlbumMedia on (AlbumMedia.Id_media=Media.Id_media) where Media.Id_media="${id}";`)
+        .then(rr => {
+            if (rr.length) {
+                rr.forEach(rritem => {
+                    runSQLQuery(`delete from AlbumMedia where Id_media="${id}" and Id_album="${rritem.Id_album}";`).then(rrw => {
+                        if (rrw.affectedRows) {
+                            runSQLQuery(`delete from Media where Id_media="${id}";`)
+                            .then(r =>  {
+                                if (r.affectedRows) res.json({
+                                    success : true,
+                                    data : r
+                                });
+    
+                                else res.status(400).json({
+                                    success : false,
+                                    msg : "An error occured while deleting."
+                                });
+                            })
+                            .catch(err => handleError(err, res));
+                        }
+    
+                        else res.status(400).json({
+                            success : false,
+                            msg : "An error occured while deleting the AlbumMedia table linked to this Media."
+                        });
+                    })
+                    .catch(err => handleError(err, res));
+                });
+            }
+
+            else res.status(400).json({
+                success : false,
+                msg : "An error occured while listing the AlbumMedia table(s) linked to this Media."
+            })
+        })
+    }
+
+    else res.status(400).json({
+        success : false,
+        msg : "Missing media id."
+    });
+}
+
+exports.remove_album = (req, res, next) => {
+    const {
+        id
+    } = req.params;
+
+    if (id) {
+        runSQLQuery(`select Media.Id_media from Album join AlbumMedia on (AlbumMedia.Id_album=Album.Id_album) join Media on (Media.Id_media=AlbumMedia.Id_media) where Album.Id_album = "${id}";`).then(r => {
+            if (r.length) {
+                r.forEach(ritem => {
+                    runSQLQuery(`delete from AlbumMedia where Id_media="${ritem.Id_media}" and Id_album="${id}";`).then(amr => {
+                        if (amr.affectedRows) {
+                            runSQLQuery(`delete from Media where Id_media="${ritem.Id_media}";`)
+                            .then(rw =>  console.log(`Deleted media ${ritem.Id_media} successfully`))
+                            .catch(err => handleError(err, res));
+                        }
+
+                        else handleError("An error occured while deleting AlbumMedia table.", res);
+                    })
+                    .catch(err => handleError(err, res));
+                });
+                setTimeout(() => {
+                    runSQLQuery(`delete from Album where Id_album="${id}";`).then(rw => {
+                        if (rw.affectedRows) {
+                            res.json({ success : true, list : r });
+                        }
+
+                        else res.status(400).json({
+                            success : false,
+                            msg : "An error occured while trying to delete the final album table."
+                        });
+                    })
+                    .catch(err => handleError(err, res));
+                }, 500);
+            }
+
+            else res.status(400).json({ success: false, msg : "An error occured while listing album's medias." });
+        })
+        .catch(err => handleError(err, res));
+    }
+
+    else res.status(400).json({
+        success : false,
+        msg : "Missing album id."
+    });
+}
+
+exports.copy_media_to_album = (req, res, next) => {
+    const {
+        Id_media,
+        Id_album
+    } = req.body;
+
+    if (Id_media && Id_album) {
+        runSQLQuery(`select Id_media from AlbumMedia where Id_media="${Id_media}" and Id_album="${Id_album}";`).then(rr => {
+            if (rr.length) res.status(400).json({
+                success : false,
+                msg : "This media is already linked to the Album table."
+            });
+
+            else {
+                runSQLQuery(`insert into AlbumMedia(Id_media, Id_album, createdAt) values("${Id_media}", "${Id_album}", CURDATE());`).then(rw => {
+                    if (rw.affectedRows) {
+                        res.json({
+                            success : true,
+                            data: rw
+                        })
+                    }
+        
+                    else res.status(400).json({
+                        success : false,
+                        msg : "An error occured while inserting AlbumMedia table."
+                    });
+                })
+                .catch(err => handleError(err, res));
+            }
+        })
+        .catch(err => handleError(err, res));
+    }
+
+    else res.status(400).json({
+        success : false,
+        msg : "Missing some fields."
+    })
+}
