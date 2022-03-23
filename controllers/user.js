@@ -15,14 +15,26 @@ exports.register_new_user = (req, res, next) => {
             if (err) return handleError(err, res);
             bcrypt.hash(password, salt, (err, hash) => {
                 if (err) return handleError(err, res);
-                runSQLQuery(`insert into Users(Id_user, firstname, lastname, email, password, createdAt, updatedAt) values(uuid(), "${firstname}", "${lastname}", "${email}", "${hash}", CURDATE(), CURDATE());`).then(r => {
-                    res.json({
-                        success: true,
-                        data : r,
-                        msg : "User created !"
-                    });
-                })
-                .catch(err => handleError(err, res));
+                runSQLQuery(`select uuid() as uuid;`).then(userId => {
+                    runSQLQuery(`insert into Users(Id_user, firstname, lastname, email, password, createdAt, updatedAt) values("${userId[0].uuid}", "${firstname}", "${lastname}", "${email}", "${hash}", CURDATE(), CURDATE());`).then(r => {
+                        if (!r.affectedRows) res.status(400).json({ success: false, msg : "An error occured while inserting user table data." });
+                        
+                        runSQLQuery(`insert into Album(Id_album, name, createdAt, updatedAt, Id_user) values(uuid(), "Recents", CURDATE(), CURDATE(), "${userId[0].uuid}");`)
+                        .then(ar => {
+                            if (!ar.affectedRows) {
+                                return res.status(400).json({ success : false, msg : "An error occured while creating the first table." });
+                            }
+
+                            res.json({
+                                success: true,
+                                data : r,
+                                msg : "User created !"
+                            });
+                        })
+                        .catch(err => handleError(err, res));
+                    })
+                    .catch(err => handleError(err, res));
+                });
             });
         });
     }

@@ -216,3 +216,54 @@ exports.copy_media_to_album = (req, res, next) => {
         msg : "Missing some fields."
     })
 }
+
+exports.list_albums = (req, res, next) => {
+    runSQLQuery(`select * from Album where Id_user="${req.user.Id_user}";`).then(ar => res.json({ success : true, data : ar }))
+    .catch(err => handleError(err, res));
+}
+
+exports.remove_media_all_albums = (req, res, next) => {
+    if (!req.body.type && !req.body.url) return res.status(400).json({
+        success : false,
+        msg : "Missing some fields."
+    });
+
+    runSQLQuery(`select Id_media from Media where url="${req.body.url}" and type="${req.body.type}";`).then(lr => {
+        if (!lr.length) return res.status(400).json({ success : false, msg : "Noting to delete, everything is okay." });
+
+        lr.forEach(media => {
+            runSQLQuery(`select Album.Id_album from Media join AlbumMedia on (AlbumMedia.Id_media=Media.Id_media) join Album on (Album.Id_album=AlbumMedia.Id_album) where Media.Id_media="${media.Id_media}";`)
+            .then(lr2 => {
+                if (lr2.length) {
+                    lr2.forEach(album => {
+                        runSQLQuery(`delete from AlbumMedia where Id_media="${media.Id_media}" and Id_album="${album.Id_album}";`).then(dr => {
+                            if (!dr.affectedRows) return res.status(400).json({
+                                success : false,
+                                msg : "There was an error while deleting the link that connects the media to the album."
+                            });
+                        })
+                        .catch(err => handleError(err, res));
+                    });
+
+                    runSQLQuery(`delete from Media where Id_media="${media.Id_media}";`).then(wr => {
+                        if (!wr.affectedRows) return res.status(400).json({
+                            success : false,
+                            msg : "An error occured while deleting the media table."
+                        });
+                    }).catch(err => handleError(err, res));
+                }
+
+                else return res.status(400).json({
+                    success : false,
+                    msg : "An error occured while listing the albums linked to the media."
+                })
+            })
+            .catch(err => handleError(err, res));
+        });
+
+        setTimeout(() => {
+            res.json({ success : true });
+        }, 500);
+    })
+    .catch(err => handleError(err, res));
+}
