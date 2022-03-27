@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { userLogin } from '../../../actions/userActions';
 import { connect } from 'react-redux';
 
-function LoginUser({ isLoading, success, history, userLogin }) {
+function LoginUser({ isLoading, success, history, userLogin, token }) {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState({
@@ -22,8 +22,12 @@ function LoginUser({ isLoading, success, history, userLogin }) {
     }
 
     useEffect(() => {
-        if (!isLoading && success) {
+        if (!isLoading && success || sessionStorage.userToken) {
             history.push("/");
+        }
+
+        if (!isLoading && token) {
+            sessionStorage.setItem('userToken', token);
         }
     }, [error, isLoading, success, email, password]);
 
@@ -44,7 +48,7 @@ function LoginUser({ isLoading, success, history, userLogin }) {
                         <label htmlFor="email">E-mail</label>
                     </div>
                     <div className="row p-2">
-                        <input id="password" placeholder="Password" type="text" className="validate" value={password} onChange={e => setPassword(e.target.value)} />
+                        <input id="password" placeholder="Password" type="password" className="validate" value={password} onChange={e => setPassword(e.target.value)} />
                         <label htmlFor="password">Password</label>
                     </div>
                     <div className="row p-2">
@@ -58,7 +62,8 @@ function LoginUser({ isLoading, success, history, userLogin }) {
 
 const mapStateToProps = state => ({
     isLoading : state.user.isLoading,
-    success : state.user.success
+    success : state.user.success,
+    token : state.user.token
 });
 
 export default connect(mapStateToProps, {
