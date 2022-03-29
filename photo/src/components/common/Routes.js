@@ -8,21 +8,23 @@ import PrivateRoute from './PrivateRoute';
 import Index from '../pages/Index';
 import RegisterUser from '../pages/user/RegisterUser';
 import LoginUser from '../pages/user/LoginUser';
+import AddAlbum from '../pages/album/AddAlbum';
 
 function Routes() {
     const [isAuthenticated, setIsAuthenticated] = useState(null);
 
     useEffect(() => {
         setIsAuthenticated(sessionStorage.userToken !== ""); // I will add a test request to check when the token is expired or not
-    });
+    }, []);
 
     return (
         <Fragment>
             <Router>
                 <Switch>
-                    <Route path="/signup" component={RegisterUser} />
-                    <Route path="/login" component={LoginUser} />
-                    <PrivateRoute isAuthenticated={isAuthenticated} token={sessionStorage.userToken} path="/" component={Index} />
+                    <Route exact path="/signup" component={RegisterUser} />
+                    <Route exact path="/login" component={LoginUser} />
+                    <PrivateRoute exact isAuthenticated={isAuthenticated} token={sessionStorage.userToken} path="/album/add" component={AddAlbum} />
+                    <PrivateRoute exact isAuthenticated={isAuthenticated} token={sessionStorage.userToken} path="/" component={Index} />
                 </Switch>
             </Router>
         </Fragment>

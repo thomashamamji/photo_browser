@@ -6,6 +6,7 @@ import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
 import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem';
+import { Link } from 'react-router-dom';
 
 const modes = ["Masquer", "Photo", "Video"];
 const percentage = 40;
@@ -47,6 +48,13 @@ function Index({
 
     return (
         <Fragment>
+            <div className="album-add-container">
+                <Link to="/album/add">
+                    <button className="btn waves-effect waves-light">
+                        +  
+                    </button>
+                </Link>
+            </div>
             <h1 className="text-center">Générer un média adapté</h1>
             <div className="centered">
                 <div className="row mt-5 centered">

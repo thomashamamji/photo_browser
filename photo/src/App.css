@@ -14,3 +14,14 @@ div.gallery {
   padding : 2%;
 }
 
+div.album-add-container {
+  position : fixed;
+  right : 3%;
+  top : 3%;
+}
+
+div.album-adding-container {
+  width : 35%;
+  margin : auto;
+}
+

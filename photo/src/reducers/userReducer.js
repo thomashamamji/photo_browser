@@ -15,7 +15,7 @@ const initialState = {
 
 export default (state = initialState, action) => {
     const {payload} = action;
-    console.log(payload);
+    console.log(action);
     switch (action.type) {
         case USER_CONNECTION_FAILED :
             return {
