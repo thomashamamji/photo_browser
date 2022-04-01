@@ -5,7 +5,9 @@ import {
     KEYWORD_VIDEOS_FAILURE,
     KEYWORD_VIDEOS_SUCCESS,
     ALBUM_ADDED,
-    ALBUM_NOT_ADDED
+    ALBUM_NOT_ADDED,
+    ALBUMS_LISTING_FAILED,
+    ALBUMS_LISTING_SUCCESS
 } from './types';
 
 axios.defaults.baseURL = "http://localhost:5000";
@@ -45,7 +47,7 @@ export const getVideosFromKeyword = k => async dispatch => {
 export const addAlbum = (n, t) => async dispatch => {
     try {
         const res = await axios.get('/index/album/add/' + n, {
-            Headers : {
+            headers : {
                 Authorization : t
             }
         });
@@ -58,6 +60,27 @@ export const addAlbum = (n, t) => async dispatch => {
     catch (e) {
         dispatch({
             type : ALBUM_NOT_ADDED
+        });
+    }
+}
+
+export const listAlbums = token => async dispatch => {
+    try {
+        const res = await axios.get(`/index/album/list`, {
+            headers : {
+                Authorization : token
+            }
+        });
+        dispatch({
+            type : ALBUMS_LISTING_SUCCESS,
+            payload : res.data
+        });
+    }
+
+    catch (err) {
+        console.log(err);
+        dispatch({
+            type : ALBUMS_LISTING_FAILED
         });
     }
 }

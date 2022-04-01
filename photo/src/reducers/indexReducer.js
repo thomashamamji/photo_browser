@@ -4,7 +4,9 @@ import {
     KEYWORD_VIDEOS_FAILURE,
     KEYWORD_VIDEOS_SUCCESS,
     ALBUM_ADDED,
-    ALBUM_NOT_ADDED
+    ALBUM_NOT_ADDED,
+    ALBUMS_LISTING_SUCCESS,
+    ALBUMS_LISTING_FAILED
 } from '../actions/types';
 
 const initialState = {
@@ -54,6 +56,19 @@ export default (state = initialState, action) => {
                 album : payload
             };
         case ALBUM_NOT_ADDED :
+            return {
+                ...state,
+                success : false,
+                isLoading : false
+            };
+        case ALBUMS_LISTING_SUCCESS :
+            return {
+                ...state,
+                success : true,
+                isLoading : false,
+                albums : payload.data
+            };
+        case ALBUMS_LISTING_FAILED :
             return {
                 ...state,
                 success : false,

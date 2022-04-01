@@ -81,3 +81,8 @@ exports.login = (req, res, next) => {
     })
     .catch(err => handleError(err, res));
 }
+
+exports.check_token = (req, res, next) => {
+    if (req.user) return res.json({ success : true });
+    else return res.status(401).json({ success : false, msg : "You need to refresh your token." });
+}

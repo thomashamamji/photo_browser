@@ -3,7 +3,9 @@ import {
     USER_CONNECTION_SUCCED,
     USER_REGISTRATION_FAILED,
     USER_REGISTRATION_SUCCED,
-    USER_DISCONNECTED
+    USER_DISCONNECTED,
+    AUTH_OK,
+    AUTH_ERROR
 } from '../actions/types';
 
 const initialState = {
@@ -24,7 +26,7 @@ export default (state = initialState, action) => {
                 isLoading : false
             };
         case USER_CONNECTION_SUCCED :
-            localStorage.setItem("userToken", payload.token);
+            sessionStorage.setItem("userToken", payload.token);
             return {
                 ...state,
                 isLoading : false,
@@ -32,7 +34,7 @@ export default (state = initialState, action) => {
                 token : payload.token
             };
         case USER_DISCONNECTED :
-            localStorage.setItem("userToken", "");
+            sessionStorage.setItem("userToken", "");
             return {
                 ...state,
                 isLoading: false,
@@ -49,6 +51,18 @@ export default (state = initialState, action) => {
                 ...state,
                 isLoading : false,
                 success : true
+            };
+        case AUTH_OK :
+            return {
+                ...state,
+                isLoading : false,
+                success : true
+            };
+        case AUTH_ERROR :
+            return {
+                ...state,
+                isLoading : false,
+                success : false
             };
         default :
             return state;

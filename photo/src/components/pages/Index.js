@@ -55,6 +55,13 @@ function Index({
                     </button>
                 </Link>
             </div>
+            <div className="gallery-link-container">
+                <Link to="/gallery">
+                    <button className='btn waves-effect waves-light'>
+                        Gallery
+                    </button>
+                </Link>
+            </div>
             <h1 className="text-center">Générer un média adapté</h1>
             <div className="centered">
                 <div className="row mt-5 centered">

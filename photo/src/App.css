@@ -25,3 +25,8 @@ div.album-adding-container {
   margin : auto;
 }
 
+div.gallery-link-container {
+  position : fixed;
+  left : 3%;
+  top : 3%;
+}
