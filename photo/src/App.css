@@ -30,3 +30,20 @@ div.gallery-link-container {
   left : 3%;
   top : 3%;
 }
+
+div.album-container {
+  width : 100%;
+  margin-right : auto;
+  margin-left : auto;
+  text-align: center;
+}
+
+div.album-container > div.album-item {
+  display : inline-block;
+}
+
+div.album-item {
+  width : 30%;
+  margin-right : 2%;
+  margin-left : 2%;
+}

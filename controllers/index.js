@@ -218,7 +218,27 @@ exports.copy_media_to_album = (req, res, next) => {
 }
 
 exports.list_albums = (req, res, next) => {
-    runSQLQuery(`select * from Album where Id_user="${req.user.Id_user}";`).then(ar => res.json({ success : true, data : ar }))
+    let AlbumMediasList = [];
+    runSQLQuery(`select * from Album where Id_user="${req.user.Id_user}";`).then(ar => {
+        if (ar.length) {
+            ar.forEach(album => {
+                runSQLQuery(`select * from Album join AlbumMedia on (AlbumMedia.Id_album=Album.Id_album) join Media on (Media.Id_media=AlbumMedia.Id_media) where Album.Id_album = "${album.Id_album}" order by Media.updatedAt desc;`).then(ml => {
+                    if (ml.length) item = ml[0];
+                    else item = null;
+                    
+                    AlbumMediasList.push({
+                        album : album,
+                        media : item
+                    });
+                })
+                .catch(err => handleError(err, res));
+            });
+        }
+
+        setTimeout(() => {
+            res.json({ success : true, data : AlbumMediasList });
+        }, 500);
+    })
     .catch(err => handleError(err, res));
 }
 

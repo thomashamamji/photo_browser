@@ -28,7 +28,7 @@ function AddAlbum({
 
     useEffect(() => {
         if (success && !isLoading) {
-            // history.push("/"); // Later /album/name
+            history.push("/gallery");
         }
 
         else if (!isLoading && success === false) setError("Album creation failed.");
