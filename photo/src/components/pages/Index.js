@@ -1,6 +1,6 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
-import { getPhotosFromKeyword, getVideosFromKeyword } from '../../actions/indexActions';
+import { getPhotosFromKeyword, getVideosFromKeyword, addMediaToAlbum } from '../../actions/indexActions';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
@@ -8,7 +8,7 @@ import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem';
 import { Link } from 'react-router-dom';
 
-const modes = ["Masquer", "Photo", "Video"];
+const modes = ["Hidden", "Photo", "Video"];
 const percentage = 40;
 
 function Index({
@@ -22,11 +22,14 @@ function Index({
     const [storedVideos, setStoredVideos] = useState([]);
 
     useEffect(() => {
-        console.log(photos, videos);
+        console.log(photos, videos, storedPhotos, storedVideos);
         setWindowHeight(document.windowHeight);
         setWindowWidth(document.windowWidth);
-        if (userKeyword && mode) setStoredPhotos(photos);
-    }, [getPhotosFromKeyword, getVideosFromKeyword, mode, photos]);
+        if (userKeyword && mode && photos.length < 20) setStoredPhotos(photos);
+        else if (userKeyword && mode && photos.length) setStoredPhotos(photos.slice(0, 19));
+        if (userKeyword && mode && videos.length < 20) setStoredVideos(videos);
+        else if (userKeyword && mode && videos.length) setStoredVideos(videos.slice(0, 19));
+    }, [getPhotosFromKeyword, getVideosFromKeyword, mode, photos, videos, storedVideos]);
 
     const onSubmit = e => {
         e.preventDefault();
@@ -44,6 +47,29 @@ function Index({
         setMode(0);
         setUserKeyword("");
         setStoredPhotos([]);
+        setStoredVideos([]);
+    }
+
+    function readMorePhotos (e) {
+        e.preventDefault();
+        if (photos.length-storedPhotos.length < 20) setStoredPhotos(photos);
+        else {
+            const tmp = [...photos];
+            const array = tmp.slice(storedPhotos.length, storedPhotos.length+20);
+            console.log(tmp, array);
+            setStoredPhotos([ ...storedPhotos, ...array ]);
+        }
+    }
+
+    function readMoreVideos (e) {
+        e.preventDefault();
+        if (videos.length-storedVideos.length < 20) setStoredVideos(videos);
+        else {
+            const tmp = [...videos];
+            const array = tmp.slice(storedVideos.length, storedVideos.length+20);
+            console.log(tmp, array);
+            setStoredVideos([ ...storedVideos, ...array ]);
+        }
     }
 
     return (
@@ -62,7 +88,7 @@ function Index({
                     </button>
                 </Link>
             </div>
-            <h1 className="text-center">Générer un média adapté</h1>
+            <h1 className="text-center">Find a media</h1>
             <div className="centered">
                 <div className="row mt-5 centered">
                     <div className="centered">
@@ -83,15 +109,15 @@ function Index({
                         mode ? (
                             <form onSubmit={onSubmit}>
                                 <div className="centered mt-5 text-center">
-                                    <h4>Quel est le mot qui décrit le mieux votre site web ?</h4>
-                                    <label><strong>Média</strong> {modes[mode]}</label>
+                                    <h4>What is the word that best describes the medias you are searching for ?</h4>
+                                    <label><strong>{modes[mode]}</strong> media</label>
                                     <br />
                                     <br />
-                                    <TextField label="Mot-clé" onChange={e => setUserKeyword(e.target.value)} variant="standard" />
+                                    <TextField label="Something" onChange={e => setUserKeyword(e.target.value)} variant="standard" />
                                     <br />
                                     <br />
                                     <Button color="success" variant={userKeyword ? ("contained") : ("disabled")} type="submit">
-                                        Générer
+                                        Search
                                     </Button>
                                 </div>
                             </form>
@@ -99,10 +125,10 @@ function Index({
                     }
                     <div className="mt-5" />
                     {
-                        photos.length && mode ? (
+                        storedPhotos.length && mode ? (
                             <Fragment>
                                 <h2 className="text-center">
-                                    Résultats
+                                    Photos
                                 </h2>
                                 <div className="gallery">
                                 <ImageList variant="masonry" cols={3} gap={8}>
@@ -119,6 +145,42 @@ function Index({
                                 </ImageList>
                                 </div>
                             </Fragment>
+                        ) : null
+                    }
+                    {
+                        storedPhotos.length < photos.length ? (
+                            <Button color='primary' variant="contained" onClick={readMorePhotos}>
+                                More
+                            </Button>
+                        ) : null
+                    }
+                    {
+                        storedVideos.length && mode ? (
+                            <>
+                                <h2 className="text-center">
+                                    Movies
+                                </h2>
+                                <div className="gallery text-center">
+                                {
+                                    storedVideos.map((v, index) => (
+                                        <div key={index}>
+                                            <video id={`Video ${index+1}`} width="350" controls>
+                                                <source src={v.src} type="video/mp4" />
+                                            </video>
+                                            <br />
+                                            <br />
+                                        </div>
+                                    ))
+                                }
+                                </div>
+                            </>
+                        ) : null
+                    }
+                    {
+                        storedVideos.length < videos.length ? (
+                            <Button color="primary" variant="contained" onClick={readMoreVideos}>
+                                More
+                            </Button>
                         ) : null
                     }
                     <div className="mt-5" />
@@ -145,5 +207,6 @@ const mapStateToProps = (state) => ({
 
 export default connect(mapStateToProps, {
     getPhotosFromKeyword,
-    getVideosFromKeyword
+    getVideosFromKeyword,
+    addMediaToAlbum
 })(Index);

@@ -7,7 +7,9 @@ import {
     ALBUM_ADDED,
     ALBUM_NOT_ADDED,
     ALBUMS_LISTING_FAILED,
-    ALBUMS_LISTING_SUCCESS
+    ALBUMS_LISTING_SUCCESS,
+    MEDIA_ADDED,
+    MEDIA_NOT_ADDED
 } from './types';
 
 axios.defaults.baseURL = "http://localhost:5000";
@@ -81,6 +83,27 @@ export const listAlbums = token => async dispatch => {
         console.log(err);
         dispatch({
             type : ALBUMS_LISTING_FAILED
+        });
+    }
+}
+
+export const addMediaToAlbum = (data, token) => async dispatch => {
+    try {
+        const res = await axios.post('/album/media/add', {
+            headers : {
+                Authozization : token
+            }
+        }, data);
+        dispatch({
+            type : MEDIA_ADDED,
+            payload : res.data
+        });
+    }
+
+    catch (err) {
+        console.log(err);
+        dispatch({
+            type : MEDIA_NOT_ADDED
         });
     }
 }
