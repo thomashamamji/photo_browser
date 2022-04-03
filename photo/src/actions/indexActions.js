@@ -91,11 +91,12 @@ export const listAlbums = token => async dispatch => {
 export const addMediaToAlbum = (data, token) => async dispatch => {
     try {
         console.log(token);
-        const res = await axios.post('/index/album/media/add', {
+        const res = await axios.post('/index/album/media/add', data, {
             headers : {
-                Authorization : token
+                Authorization : token,
+                "Content-Type" : "application/json"
             }
-        }, data);
+        });
         dispatch({
             type : MEDIA_ADDED,
             payload : res.data

@@ -5,18 +5,16 @@ import { connect } from 'react-redux';
 import { getPhotosFromKeyword, getVideosFromKeyword, addMediaToAlbum, listAlbums } from '../../actions/indexActions';
 
 import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
 import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem';
 import { Link } from 'react-router-dom';
-import { ALBUMS_LISTING_FAILED } from '../../actions/types';
 
 const modes = ["Hidden", "Photo", "Video"];
 
 // I just need scripts to add the selected medias to any album now
 
 function Index({
-    listAlbums, getPhotosFromKeyword, getVideosFromKeyword, success, isLoading, videos, photos, albums, addMediaToAlbum
+    listAlbums, getPhotosFromKeyword, getVideosFromKeyword, success, isLoading, videos, photos, albums, addMediaToAlbum, token
 }) {
     const [mode, setMode] = useState(0);
     const [userKeyword, setUserKeyword] = useState("");
@@ -33,7 +31,7 @@ function Index({
         else if (userKeyword && mode && photos.length && !storedPhotos.length) setStoredPhotos(photos.slice(0, 19));
         if (userKeyword && mode && videos.length < 20 && !storedVideos.length) setStoredVideos(videos);
         else if (userKeyword && mode && videos.length && !storedVideos.length) setStoredVideos(videos.slice(0, 19));
-        if (listingAlbums) listAlbums(sessionStorage.userToken); 
+        if (listingAlbums) listAlbums(localStorage.userToken); 
         console.log(selectedItems);
     }, [getPhotosFromKeyword, getVideosFromKeyword, photos, videos, listingAlbums, addingToAlbum]);
 
@@ -117,15 +115,15 @@ function Index({
     function addToAnAlbum (album, event) {
         event.preventDefault();
         setAddingToAlbum(true);
-        console.log('Adding to album ' + album + ' with ' + sessionStorage.userToken);
-        if (album && sessionStorage.userToken) {
+        console.log('Adding to album ' + album + ' with ' + localStorage.getItem('userToken'));
+        if (album && localStorage.userToken) {
             // Add to the selected album
             selectedItems.forEach(item => {
                 addMediaToAlbum({
                     name : album,
                     url : item.src,
                     type : item.type
-                }, sessionStorage.userToken);
+                }, localStorage.userToken);
             });
             setListingAlbums(false);
         }

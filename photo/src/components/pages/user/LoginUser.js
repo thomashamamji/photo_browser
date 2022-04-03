@@ -22,14 +22,14 @@ function LoginUser({ isLoading, success, history, userLogin, token }) {
     }
 
     useEffect(() => {
-        if (!isLoading && success || sessionStorage.userToken) {
+        if (!isLoading && success || localStorage.userToken) {
             history.push("/");
         }
 
         if (!isLoading && token) {
-            sessionStorage.setItem('userToken', token);
+            localStorage.setItem('userToken', token);
         }
-    }, [error, isLoading, success, email, password]);
+    }, [isLoading, success]);
 
     return (
         <>

@@ -26,7 +26,7 @@ export default (state = initialState, action) => {
                 isLoading : false
             };
         case USER_CONNECTION_SUCCED :
-            sessionStorage.setItem("userToken", payload.token);
+            localStorage.setItem("userToken", JSON.stringify(payload.token));
             return {
                 ...state,
                 isLoading : false,
@@ -34,7 +34,7 @@ export default (state = initialState, action) => {
                 token : payload.token
             };
         case USER_DISCONNECTED :
-            sessionStorage.setItem("userToken", "");
+            localStorage.setItem("userToken", "");
             return {
                 ...state,
                 isLoading: false,
