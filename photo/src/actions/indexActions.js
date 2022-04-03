@@ -68,6 +68,7 @@ export const addAlbum = (n, t) => async dispatch => {
 
 export const listAlbums = token => async dispatch => {
     try {
+        console.log(token);
         const res = await axios.get(`/index/album/list`, {
             headers : {
                 Authorization : token
@@ -89,9 +90,10 @@ export const listAlbums = token => async dispatch => {
 
 export const addMediaToAlbum = (data, token) => async dispatch => {
     try {
-        const res = await axios.post('/album/media/add', {
+        console.log(token);
+        const res = await axios.post('/index/album/media/add', {
             headers : {
-                Authozization : token
+                Authorization : token
             }
         }, data);
         dispatch({
