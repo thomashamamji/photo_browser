@@ -47,3 +47,7 @@ div.album-item {
   margin-right : 2%;
   margin-left : 2%;
 }
+
+img.media-selected {
+  border : 2px solid #BB6060;
+}

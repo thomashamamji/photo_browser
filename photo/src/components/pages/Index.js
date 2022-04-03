@@ -3,33 +3,32 @@ import { connect } from 'react-redux';
 import { getPhotosFromKeyword, getVideosFromKeyword, addMediaToAlbum } from '../../actions/indexActions';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
-import Box from '@mui/material/Box';
 import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem';
 import { Link } from 'react-router-dom';
 
 const modes = ["Hidden", "Photo", "Video"];
-const percentage = 40;
+
+// I just need scripts to add the selected medias to any album now
 
 function Index({
     getPhotosFromKeyword, getVideosFromKeyword, success, isLoading, videos, photos
 }) {
     const [mode, setMode] = useState(0);
     const [userKeyword, setUserKeyword] = useState("");
-    const [windowHeight, setWindowHeight] = useState(document.windowHeight);
-    const [windowWidth, setWindowWidth] = useState(document.windowWidth);
     const [storedPhotos, setStoredPhotos] = useState([]);
     const [storedVideos, setStoredVideos] = useState([]);
+    const [selection, setSelection] = useState(false);
+    const [selectedItems, setSelectedItems] = useState([]);
 
     useEffect(() => {
         console.log(photos, videos, storedPhotos, storedVideos);
-        setWindowHeight(document.windowHeight);
-        setWindowWidth(document.windowWidth);
         if (userKeyword && mode && photos.length < 20) setStoredPhotos(photos);
         else if (userKeyword && mode && photos.length) setStoredPhotos(photos.slice(0, 19));
         if (userKeyword && mode && videos.length < 20) setStoredVideos(videos);
         else if (userKeyword && mode && videos.length) setStoredVideos(videos.slice(0, 19));
-    }, [getPhotosFromKeyword, getVideosFromKeyword, mode, photos, videos, storedVideos]);
+        console.log(selectedItems);
+    }, [getPhotosFromKeyword, getVideosFromKeyword, photos, videos]);
 
     const onSubmit = e => {
         e.preventDefault();
@@ -72,6 +71,33 @@ function Index({
         }
     }
 
+    function selectPhotoItem (e) {
+        if (selection && !selectedItems.find(i => i.id == parseInt(e.target.id))) setSelectedItems([ ...selectedItems, { id : parseInt(e.currentTarget.id), src : e.target.src, type : "img" } ]);
+        else if (selection) {
+            const tmp = [...selectedItems];
+            const items = tmp.filter(t => t.id !== parseInt(e.target.id));
+            setSelectedItems(items);
+        }
+    }
+
+    function selectVideoItem (e) {
+        if (selection && !selectedItems.find(i => i.id == parseInt(e.target.id))) setSelectedItems([ ...selectedItems, { id : parseInt(e.currentTarget.id), src : e.currentTarget.lastChild.src, type : "video" } ]);
+        else if (selection) {
+            const tmp = [...selectedItems];
+            const items = tmp.filter(t => t.id !== parseInt(e.target.id));
+            setSelectedItems(items, e.currentTarget.lastChild.src);
+        }
+    }
+
+    function handleModeChange (modeNb) {
+        if (modeNb !== mode) {
+            setUserKeyword("");
+            setStoredPhotos([]);
+            setStoredVideos([]);
+            setMode(modeNb);
+        }
+    }
+
     return (
         <Fragment>
             <div className="album-add-container">
@@ -93,18 +119,26 @@ function Index({
                 <div className="row mt-5 centered">
                     <div className="centered">
                         <div className="mt-2 mb-2 centered text-center">
-                            <Button variant="contained" color="primary" onClick={e => setMode(1)}>
+                            <Button variant="contained" color="primary" onClick={handleModeChange(1)}>
                                 Photo
                             </Button>
                         </div>
                     </div>
                     <div className="centered">
                         <div className="mt-2 mb-2 centered text-center">
-                            <Button variant="contained" color="primary" onClick={e => setMode(2)}>
+                            <Button variant="contained" color="primary" onClick={handleModeChange(2)}>
                                 Vidéo
                             </Button>
                         </div>
                     </div>
+                    <h3 className="text-center p-2">{selection ? (`${selectedItems.length} selected medias`) : null}</h3>
+                    {
+                        storedPhotos.length || storedVideos.length ? (
+                            <Button color="primary" variant="outlined" onClick={e => setSelection(!selection)}>
+                                {selection ? ("Cancel selection") : ("Select")}
+                            </Button>
+                        ) : null
+                    }
                     {
                         mode ? (
                             <form onSubmit={onSubmit}>
@@ -139,6 +173,9 @@ function Index({
                                         srcSet={`${item.src}?w=248&fit=crop&auto=format&dpr=2 2x`}
                                         alt={`Photo ${userKeyword} number ${index+1}`}
                                         loading="lazy"
+                                        className={selection && selectedItems.find(item => item.id === index) ? ('media-selected') : ("")}
+                                        onClick={selectPhotoItem}
+                                        id={index}
                                     />
                                     </ImageListItem>
                                 ))}
@@ -148,7 +185,7 @@ function Index({
                         ) : null
                     }
                     {
-                        storedPhotos.length < photos.length ? (
+                        photos.length && storedPhotos.length < photos.length ? (
                             <Button color='primary' variant="contained" onClick={readMorePhotos}>
                                 More
                             </Button>
@@ -164,7 +201,7 @@ function Index({
                                 {
                                     storedVideos.map((v, index) => (
                                         <div key={index}>
-                                            <video id={`Video ${index+1}`} width="350" controls>
+                                            <video width="350" controls alt={v.src} id={index} onClick={selectVideoItem} className={selection && selectedItems.find(item => item.id === index) ? ('media-selected') : ("")}>
                                                 <source src={v.src} type="video/mp4" />
                                             </video>
                                             <br />
@@ -177,7 +214,7 @@ function Index({
                         ) : null
                     }
                     {
-                        storedVideos.length < videos.length ? (
+                        videos.length && storedVideos.length < videos.length ? (
                             <Button color="primary" variant="contained" onClick={readMoreVideos}>
                                 More
                             </Button>
