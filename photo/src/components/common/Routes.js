@@ -14,6 +14,7 @@ import RegisterUser from '../pages/user/RegisterUser';
 import LoginUser from '../pages/user/LoginUser';
 import AddAlbum from '../pages/album/AddAlbum';
 import Gallery from '../pages/album/Gallery';
+import AlbumMediasList from '../pages/album/AlbumMediasList';
 
 const Routes = ({ isLoading, success, getUserAuthStatus }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(null);
@@ -39,6 +40,7 @@ const Routes = ({ isLoading, success, getUserAuthStatus }) => {
                     <PrivateRoute exact isAuthenticated={isAuthenticated} token={localStorage.userToken} path="/album/add" component={AddAlbum} />
                     <PrivateRoute exact isAuthenticated={isAuthenticated} token={localStorage.userToken} path="/" component={Index} />
                     <PrivateRoute exact isAuthenticated={isAuthenticated} token={localStorage.userToken} path="/gallery" component={Gallery} />
+                    <PrivateRoute exact isAuthenticated={isAuthenticated} token={localStorage.userToken} path="/gallery/album/:albumName" component={AlbumMediasList} />
                 </Switch>
             </Router>
         </Fragment>

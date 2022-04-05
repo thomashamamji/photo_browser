@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { listAlbums } from '../../../actions/indexActions';
+import { Link } from 'react-router-dom';
 
 // I may add album desciption
 
@@ -11,9 +12,13 @@ const Gallery = ({
     listAlbums
 }) => {
     useEffect(() => {
-        listAlbums(sessionStorage.userToken);
+        if (localStorage.userToken) listAlbums(localStorage.userToken);
         if (albums.length) console.log(albums);
     }, [listAlbums]);
+
+    if (isLoading) return (
+        <p className="text-center text-primary">Loading ...</p>
+    );
 
     return (
         <>
@@ -21,7 +26,7 @@ const Gallery = ({
             <div className="container album-container m-5">
             {
                 albums.length && albums.map((album, index) => (
-                    <>
+                    <Link to={`/gallery/album/${album.album.name}`}>
                         <div key={index} className="album-item">
                             <div className="card">
                                 <div className="card-image">
@@ -30,7 +35,7 @@ const Gallery = ({
                                 </div>
                             </div>
                         </div>
-                    </>
+                    </Link>
                 ))
             }
             </div>

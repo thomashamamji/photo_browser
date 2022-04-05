@@ -12,7 +12,8 @@ const initialState = {
     token : "",
     user : {},
     success : null,
-    isLoading : true
+    isLoading : true,
+    auth : null // To know about the authentication
 };
 
 export default (state = initialState, action) => {
@@ -56,13 +57,15 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 isLoading : false,
-                success : true
+                success : true,
+                auth : true
             };
         case AUTH_ERROR :
             return {
                 ...state,
                 isLoading : false,
-                success : false
+                success : false,
+                auth : false
             };
         default :
             return state;

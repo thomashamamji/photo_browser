@@ -8,7 +8,9 @@ import {
     ALBUMS_LISTING_SUCCESS,
     ALBUMS_LISTING_FAILED,
     MEDIA_ADDED,
-    MEDIA_NOT_ADDED
+    MEDIA_NOT_ADDED,
+    ALBUM_MEDIAS_LISTED,
+    ALBUM_MEDIAS_NOT_LISTED
 } from '../actions/types';
 
 const initialState = {
@@ -90,6 +92,20 @@ export default (state = initialState, action) => {
                 ...state,
                 success : false,
                 isLoading : false
+            };
+        case ALBUM_MEDIAS_LISTED :
+            return {
+                ...state,
+                success : true,
+                isLoading : false,
+                medias : payload.result
+            };
+        case ALBUM_MEDIAS_NOT_LISTED :
+            return {
+                ...state,
+                success : false,
+                isLoading : false,
+                medias : []
             };
         default :
             return state;

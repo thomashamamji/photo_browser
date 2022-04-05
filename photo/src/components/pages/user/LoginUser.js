@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { userLogin } from '../../../actions/userActions';
 import { connect } from 'react-redux';
 
-function LoginUser({ isLoading, success, history, userLogin, token }) {
+function LoginUser({ isLoading, success, history, userLogin, token, auth }) {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState({
@@ -35,8 +35,8 @@ function LoginUser({ isLoading, success, history, userLogin, token }) {
         <>
             <h1 className="text-center">Log In</h1>
             {
-                !isLoading && success === false ? (
-                    <p className="text-danger">
+                !isLoading && success === false && auth !== false ? (
+                    <p className="text-danger text-center">
                         An error occured during the Log In process. Be sure to enter the correct credentials.
                     </p>
                 ) : null
@@ -63,7 +63,8 @@ function LoginUser({ isLoading, success, history, userLogin, token }) {
 const mapStateToProps = state => ({
     isLoading : state.user.isLoading,
     success : state.user.success,
-    token : state.user.token
+    token : state.user.token,
+    auth : state.user.auth
 });
 
 export default connect(mapStateToProps, {
