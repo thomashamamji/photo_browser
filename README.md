@@ -1,4 +1,4 @@
-# photo_browser
+# Photo browser
 
 Medias gallery created to get photos found from multiple well known websites.
 This software allows users to create album in a gallery and add medias in it.
