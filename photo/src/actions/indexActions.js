@@ -14,7 +14,7 @@ import {
     ALBUM_MEDIAS_NOT_LISTED
 } from './types';
 
-axios.defaults.baseURL = "http://localhost:5000";
+axios.defaults.baseURL = "http://localhost:4040";
 
 export const getPhotosFromKeyword = k => async dispatch => {
     try {

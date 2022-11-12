@@ -9,7 +9,7 @@ import {
     AUTH_ERROR
 } from "./types";
 
-axios.defaults.baseURL = "http://localhost:5000";
+axios.defaults.baseURL = "http://localhost:4040";
 
 export const userLogin = credentials => async dispatch => {
     try {
