@@ -46,3 +46,9 @@ The Node.js backend is using a local MySQL database with the following configura
 ### Adding the cats to the Recents album
 
 <img width="1440" alt="Adding medias to an album" src="https://user-images.githubusercontent.com/45339466/201495382-478e6e97-18a9-4dfc-ad46-9ed5a62fa681.png">
+
+### Listing the Recents album
+
+The Recent album<img width="1440" alt="image" src="https://user-images.githubusercontent.com/45339466/201495563-a10f6673-365c-4418-95b5-f5756c44d3cb.png">
+
+
