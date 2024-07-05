@@ -1,8 +1,8 @@
 # Photo browser
 
-Medias gallery created to get photos found from multiple well known websites.
-This software allows users to create album in a gallery and add medias in it.
-It is also possible for the user to share album and photos by email or message.
+Medias gallery created to get photos found from multiple well known websites.  
+This software allows users to create albums in a gallery and add medias inside.  
+It will also be possible for users to share albums and photos by email or message.  
 
 ## The concept
 
@@ -51,4 +51,8 @@ The Node.js backend is using a local MySQL database with the following configura
 
 <img width="1440" alt="image" src="https://user-images.githubusercontent.com/45339466/201495563-a10f6673-365c-4418-95b5-f5756c44d3cb.png">
 
+## Frameworks  
+<img style="text-align:center;" height="200" alt="Capture d’écran 2024-07-05 à 20 57 47" src="https://github.com/thomashamamji/photo_browser/assets/45339466/343b515b-aa6a-402a-9faa-1c205c60b1dd">
+<img height="200" alt="Capture d’écran 2024-07-05 à 20 56 49" src="https://github.com/thomashamamji/photo_browser/assets/45339466/7c5198de-c4b3-440d-9818-0144b30afc20">
+<img height="200" alt="Capture d’écran 2024-07-05 à 21 00 17" src="https://github.com/thomashamamji/photo_browser/assets/45339466/dcd736ea-3325-4da9-85b3-8846f0c11e32">
 
